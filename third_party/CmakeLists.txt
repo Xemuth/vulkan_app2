@@ -1,0 +1,49 @@
+
+## Build GLFW
+find_package(Vulkan)
+set(glfw "${CMAKE_CURRENT_SOURCE_DIR}/third_party/glfw")
+
+file(GLOB_RECURSE files_win    CONFIGURE_DEPENDS "${glfw}/src/*.*")
+file(GLOB_RECURSE files_egl    CONFIGURE_DEPENDS "${glfw}/src/*.*")
+file(GLOB_RECURSE files_wgl    CONFIGURE_DEPENDS "${glfw}/src/*.*")
+file(GLOB_RECURSE files_osmesa CONFIGURE_DEPENDS "${glfw}/src/*.*")
+file(GLOB_RECURSE files2       CONFIGURE_DEPENDS "${glfw}/src/*.*")
+file(GLOB_RECURSE glfw_include CONFIGURE_DEPENDS "${glfw}/include/*.*")
+
+list(FILTER files_win INCLUDE REGEX "[\\\/]win32.*$")
+list(FILTER files_egl INCLUDE REGEX "[\\\/]wgl.*$")
+list(FILTER files_wgl INCLUDE REGEX "[\\\/]egl.*$")
+list(FILTER files_osmesa INCLUDE REGEX "[\\\/]osmesa.*$")
+list(FILTER files2 INCLUDE REGEX "[\\\/][^_]*$")
+
+ADD_LIBRARY(glfw STATIC ${files_win} ${files_egl}  ${files_wgl}  ${files_osmesa}  ${files2} ${glfw_include})
+
+target_include_directories( glfw
+    PUBLIC  "${glfw}/include"
+)
+
+target_compile_definitions(glfw PUBLIC
+    _GLFW_WIN32
+    _GLFW_VULKAN_STATIC 
+)
+
+# Ignore warning
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(glfw PUBLIC "-Wno-everything")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(glfw PUBLIC "/W0")
+endif()
+
+target_link_libraries(glfw PUBLIC
+    kernel32
+    user32
+    gdi32
+    winspool
+    shell32
+    ole32
+    oleaut32
+    uuid
+    comdlg32
+    advapi32
+    ${Vulkan_LIBRARIES}
+)

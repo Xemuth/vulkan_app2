@@ -1,0 +1,40 @@
+cmake_minimum_required(VERSION 3.10)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS On)
+
+project(vulkan_app2 C CXX)
+
+include("${CMAKE_CURRENT_SOURCE_DIR}/third_party/CmakeLists.txt")
+
+file(GLOB vulkan_app2_src
+    CONFIGURE_DEPENDS 
+    "src/*.h"
+    "src/*.cpp"
+    "src/*.c"
+    "src/*.hpp"
+    "include/*.h"
+    "include/*.cpp"
+    "include/*.c"
+    "include/*.hpp"
+)
+
+add_executable(vulkan_app2 ${vulkan_app2_src} )
+
+set_target_properties(vulkan_app2
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../bin/${CMAKE_BUILD_TYPE}"
+)
+
+target_compile_definitions(vulkan_app2 PRIVATE)
+target_include_directories(vulkan_app2 PUBLIC
+    "${root_dir}/include"
+    glfw
+    ${glm_include_path}
+    ${Vulkan_INCLUDE_DIRS}
+)
+
+target_link_libraries(vulkan_app2 PUBLIC 
+    ${Vulkan_LIBRARIES}
+    glfw
+)
