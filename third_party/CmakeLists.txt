@@ -1,3 +1,4 @@
+set(CMAKE_EXPORT_COMPILE_COMMANDS On)
 
 ## Build GLFW
 find_package(Vulkan)
@@ -18,8 +19,8 @@ list(FILTER files2 INCLUDE REGEX "[\\\/][^_]*$")
 
 ADD_LIBRARY(glfw STATIC ${files_win} ${files_egl}  ${files_wgl}  ${files_osmesa}  ${files2} ${glfw_include})
 
-target_include_directories( glfw
-    PUBLIC  "${glfw}/include"
+target_include_directories( glfw PUBLIC
+    "${glfw}/include"
 )
 
 target_compile_definitions(glfw PUBLIC
@@ -32,6 +33,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_compile_options(glfw PUBLIC "-Wno-everything")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(glfw PUBLIC "/W0")
+endif()
+
+string(FIND ${Vulkan_LIBRARIES} "Lib32"  $lib_32_used)
+if($lib_32_used)
+    string(REPLACE "Lib32" "Lib" Vulkan_LIBRARIES ${Vulkan_LIBRARIES})
 endif()
 
 target_link_libraries(glfw PUBLIC
