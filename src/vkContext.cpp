@@ -16,10 +16,17 @@ void create_vk_instance(VkContext& context)
     info.apiVersion         = VK_API_VERSION_1_3;
 
     VkInstanceCreateInfo instance;
-    instance.sType            = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    instance.pApplicationInfo = &info;
+    instance.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    instance.pApplicationInfo        = &info;
+    instance.enabledExtensionCount   = context._vk_extensions_names.size();
+    instance.ppEnabledExtensionNames = context._vk_extensions_names.data();
+    instance.enabledLayerCount       = context._vk_layers_names.size();
+    instance.ppEnabledLayerNames     = context._vk_layers_names.data();
     // instance.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
     instance.pNext = nullptr;
+    auto result    = vkCreateInstance(&instance, &context._instance);
+    if (result != VK_SUCCESS)
+        return;
 }
 
 }   // namespace vkapp

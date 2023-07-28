@@ -13,7 +13,9 @@ std::vector<const char*> get_glfw_vk_required_extension();
 
 enum class WindowStatus
 {
-    INIT
+    INIT,
+    RUN,
+    END
 };
 
 struct WindowApp

@@ -3,6 +3,10 @@
 
 #include <glfw/glfw3.h>
 
+namespace
+{
+}   // namespace
+
 namespace vkapp
 {
 
@@ -26,7 +30,21 @@ Error WindowApp::Run(VkContext& context)
         switch (_status)
         {
         case WindowStatus::INIT:
-            // create_glfw_window();
+            glfwInit();
+
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+            _window = glfwCreateWindow(800, 600, "Vulkan", nullptr, nullptr);
+            _status = WindowStatus::RUN;
+            break;
+        case WindowStatus::RUN:
+            while (!glfwWindowShouldClose(_window))
+            {
+                glfwPollEvents();
+            }
+            _status = WindowStatus::END;
+        case WindowStatus::END:
             break;
         }
     }
