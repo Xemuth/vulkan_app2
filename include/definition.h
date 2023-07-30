@@ -13,11 +13,12 @@ typedef uint32_t AppError;
 enum Error : uint32_t
 {
     NO_ERROR,
+    SHOULD_CLOSE,
 };
 
-const char* const ErrorStr[] = {"no error", "Dummy error"};
+const char* const ErrorStr[] = {"no error", "Error occured and window must close"};
 
-const char* error_to_string(AppError error)
+static const char* error_to_string(AppError error)
 {
     return string_VkResult(static_cast<VkResult>(error));
 }

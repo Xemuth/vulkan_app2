@@ -4,10 +4,15 @@
 
 #include "definition.h"
 
+#include <memory>
+#include <stack>
+
 typedef struct GLFWwindow GLFWwindow;
 
 namespace vkapp
 {
+
+struct VkContext;
 
 std::vector<const char*> get_glfw_vk_required_extension();
 
@@ -15,15 +20,28 @@ enum class WindowStatus
 {
     INIT,
     RUN,
-    END
+    END,
 };
 
 struct WindowApp
 {
-    Error Run(VkContext&);
+    WindowApp();
+    ~WindowApp() = default;
 
-    GLFWwindow*  _window;
-    WindowStatus _status;
+    WindowApp(const WindowApp&) = delete;
+    WindowApp(WindowApp&&)      = delete;
+
+    WindowApp& operator=(const WindowApp&) = delete;
+    WindowApp& operator=(WindowApp&&)      = delete;
+
+    Error run(VkContext&);
+    Error last_error();
+
+    WindowStatus      _status;
+    std::stack<Error> _errors;
+
+    struct Impl;
+    std::shared_ptr<Impl> pImpl;
 };
 
 }   // namespace vkapp

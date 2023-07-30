@@ -24,7 +24,7 @@ void create_vk_instance(VkContext& context)
     instance.ppEnabledLayerNames     = context._vk_layers_names.data();
     // instance.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
     instance.pNext = nullptr;
-    auto result    = vkCreateInstance(&instance, &context._instance);
+    auto result    = vkCreateInstance(&instance, nullptr, &context._instance);
     if (result != VK_SUCCESS)
         return;
 }
