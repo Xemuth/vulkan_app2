@@ -53,3 +53,21 @@ target_link_libraries(glfw PUBLIC
     advapi32
     ${Vulkan_LIBRARIES}
 )
+
+## Build spdlog
+
+set(spdlog "${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog")
+file(GLOB_RECURSE files_src     CONFIGURE_DEPENDS "${spdlog}/src/*.*")
+file(GLOB_RECURSE files_include CONFIGURE_DEPENDS "${spdlog}/include/spdlog/*.*")
+
+ADD_LIBRARY(spdlog STATIC ${files_src} ${files_include})
+
+target_include_directories( spdlog PUBLIC
+    "${spdlog}/include/"
+)
+
+target_compile_definitions(spdlog PUBLIC 
+    SPDLOG_COMPILED_LIB
+)
+
+target_link_libraries(spdlog PUBLIC)

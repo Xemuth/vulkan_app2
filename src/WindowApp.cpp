@@ -2,6 +2,15 @@
 #include "vkContext.h"
 
 #include <glfw/glfw3.h>
+#include <spdlog/spdlog.h>
+
+#define LOGGER_NAME "WindowApp"
+#if defined(ENABLE_LOG)
+static auto logger = MasterLogger::get_logger(LOGGER_NAME);
+#define LOGGER(action) logger->action
+#else
+#define LOGGER(action)
+#endif
 
 namespace
 {
@@ -35,7 +44,7 @@ std::vector<const char*> get_glfw_vk_required_extension()
 
 Error WindowApp::Impl::initGLFW()
 {
-    glfwInit();
+    LOGGER(debug("initGLFW"));
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);

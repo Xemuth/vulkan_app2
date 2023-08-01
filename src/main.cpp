@@ -1,7 +1,11 @@
+#include "definition.h"
 #include "vkContext.h"
 #include "windowApp.h"
 
 #include <iostream>
+
+#define LOGGER_NAME "main"
+// static auto logger = std::make_shared<spdlog::logger>(spdlog::get("master_logger")->clone());
 
 int main()
 {
