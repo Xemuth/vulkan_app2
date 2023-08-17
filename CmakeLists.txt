@@ -32,6 +32,8 @@ target_compile_definitions(vulkan_app2 PUBLIC
     GLFW_INCLUDE_VULKAN
 )
 
+target_compile_options(vulkan_app2 PUBLIC -nostdlib)
+
 target_include_directories(vulkan_app2 PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
     ${Vulkan_INCLUDE_DIRS}
