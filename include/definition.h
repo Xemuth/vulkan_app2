@@ -36,6 +36,7 @@ typedef uint32_t AppError;
 enum Error : uint32_t
 {
     NO_ERROR,
+    GLFW_FAILED_TO_INIT,
     SHOULD_CLOSE,
 };
 
