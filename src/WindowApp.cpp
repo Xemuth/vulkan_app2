@@ -26,7 +26,7 @@ struct WindowApp::Impl
 
     Error initGLFW();
     Error runGLFW();
-    Error endGLFW();
+    Error endGLFW(Error last_error);
 };
 
 std::vector<const char*> get_glfw_vk_required_extension()
@@ -51,8 +51,8 @@ Error WindowApp::Impl::initGLFW()
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     _window = glfwCreateWindow(800, 600, "Vulkan", nullptr, nullptr);
-    if(!_window)
-    {   
+    if (!_window)
+    {
         const char** error_str;
         glfwGetError(error_str);
         LOGGER(debug(*error_str));
@@ -64,6 +64,7 @@ Error WindowApp::Impl::initGLFW()
 Error WindowApp::Impl::runGLFW()
 {
     LOGGER(debug("Run GLFW"));
+
     while (!glfwWindowShouldClose(_window))
     {
         if (_parent->last_error() != Error::NO_ERROR)
@@ -75,10 +76,13 @@ Error WindowApp::Impl::runGLFW()
     return Error::SHOULD_CLOSE;
 }
 
-Error WindowApp::Impl::endGLFW()
+Error WindowApp::Impl::endGLFW(Error last_error)
 {
     LOGGER(debug("End GLFW"));
-    glfwDestroyWindow(_window);
+    if (last_error != Error::GLFW_FAILED_TO_INIT)
+    {
+        glfwDestroyWindow(_window);
+    }
     glfwTerminate();
     return Error::NO_ERROR;
 }
@@ -105,7 +109,7 @@ Error WindowApp::run(VkContext& context)
             if (status != Error::NO_ERROR)
                 _status = WindowStatus::END;
         case WindowStatus::END:
-            status = pImpl->endGLFW();
+            status = pImpl->endGLFW(last_error());
             if (status != Error::NO_ERROR)
                 _errors.push(status);
             break;

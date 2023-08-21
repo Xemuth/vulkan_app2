@@ -38,6 +38,7 @@ enum Error : uint32_t
     NO_ERROR,
     GLFW_FAILED_TO_INIT,
     SHOULD_CLOSE,
+    VULKAN_INIT_ERROR,
 };
 
 const char* const ErrorStr[] = {"no error", "Error occured and window must close"};

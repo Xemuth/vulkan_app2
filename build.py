@@ -18,6 +18,8 @@ if __name__ == "__main__":
                         help="Select generator", choices=["ninja", "msvc"], required=False, action="store", default="ninja", type=str.lower)
     parser.add_argument("-e", "--execute",
                         help="Execute the generated binary", required=False, action="store_true", default=False)
+    parser.add_argument("-l", "--validation_layer",
+                        help="Enable validation layer", required=False, action="store_true", default=False)
     args = parser.parse_args()
 
     if not os.path.exists("CMakeLists.txt"):
@@ -33,6 +35,9 @@ if __name__ == "__main__":
         if args.build is not None:
             generate_cmd = generate_cmd + ["-DCMAKE_BUILD_TYPE=" + camel_case(args.build)]
 
+        if args.validation_layer is not None:
+            generate_cmd = generate_cmd + ["-DENABLE_VALIDATION_LAYER=ON"]
+        
         if args.reconfigure and os.path.exists("./out"):
             shutil.rmtree("./out")
 

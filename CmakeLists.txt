@@ -9,6 +9,8 @@ project(vulkan_app2 C CXX)
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/third_party/CmakeLists.txt")
 
+set(ENABLE_VALIDATION_LAYER CACHE BOOL OFF)
+
 file(GLOB_RECURSE vulkan_app2_src
     CONFIGURE_DEPENDS 
     "src/*.h"
@@ -31,6 +33,10 @@ set_target_properties(vulkan_app2
 target_compile_definitions(vulkan_app2 PUBLIC
     GLFW_INCLUDE_VULKAN
 )
+
+if(${ENABLE_VALIDATION_LAYER})
+    add_compile_definitions(vulkan_app2 PUBLIC -DENABLE_VALIDATION_LAYER)
+endif()
 
 target_compile_options(vulkan_app2 PUBLIC -nostdlib)
 
