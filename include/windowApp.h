@@ -37,7 +37,7 @@ struct WindowApp
     Error run(VkContext&);
     Error last_error();
 
-    WindowStatus      _status;
+    WindowStatus      _status = WindowStatus::INIT;
     std::stack<Error> _errors;
 
     struct Impl;

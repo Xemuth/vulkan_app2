@@ -100,9 +100,17 @@ Error WindowApp::run(VkContext& context)
             {
                 _errors.push(status);
                 _status = WindowStatus::END;
+                return status;
             }
-            else
-                _status = WindowStatus::RUN;
+
+            status = context.init();
+            if (status != Error::NO_ERROR)
+            {
+                _errors.push(status);
+                _status = WindowStatus::END;
+                return status;
+            }
+            _status = WindowStatus::RUN;
             break;
         case WindowStatus::RUN:
             status = pImpl->runGLFW();

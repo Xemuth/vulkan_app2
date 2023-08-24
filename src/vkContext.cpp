@@ -23,6 +23,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityF
 
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger)
 {
+    LOGGER(debug("Creating debug callback"));
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (func != nullptr)
     {
@@ -46,8 +47,6 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
 
 VkResult check_validation_layer_support(vkapp::VkContext& context)
 {
-    std::find(context._vk_layers_names.begin(), context._vk_layers_names.end(), VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
@@ -75,6 +74,7 @@ VkResult check_validation_layer_support(vkapp::VkContext& context)
 
 VkResult create_vk_instance(vkapp::VkContext& context)
 {
+    LOGGER(debug("Creating vulkan instance"));
     VkApplicationInfo info;
     info.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     info.pApplicationName   = "vulkan_app_2";
@@ -84,11 +84,11 @@ VkResult create_vk_instance(vkapp::VkContext& context)
     info.apiVersion         = VK_API_VERSION_1_3;
 
     VkInstanceCreateInfo instance;
-    instance.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    instance.pApplicationInfo        = &info;
-    instance.enabledExtensionCount   = context._vk_extensions_names.size();
-    instance.ppEnabledExtensionNames = context._vk_extensions_names.data();
+    instance.sType            = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    instance.pApplicationInfo = &info;
 #ifdef ENABLE_VALIDATION_LAYER
+    if (std::find(context._vk_extensions_names.begin(), context._vk_extensions_names.end(), VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == context._vk_extensions_names.end())
+        context._vk_extensions_names.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     auto result = check_validation_layer_support(context);
     if (result != VkResult::VK_SUCCESS)
         return result;
@@ -98,6 +98,8 @@ VkResult create_vk_instance(vkapp::VkContext& context)
     instance.enabledLayerCount   = 0;
     instance.ppEnabledLayerNames = nullptr;
 #endif
+    instance.enabledExtensionCount   = context._vk_extensions_names.size();
+    instance.ppEnabledExtensionNames = context._vk_extensions_names.data();
     // instance.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
     instance.pNext = nullptr;
     return vkCreateInstance(&instance, nullptr, &context._instance);
@@ -122,12 +124,20 @@ Error VkContext::init()
 {
     auto result = create_vk_instance(*this);
     if (result != VkResult::VK_SUCCESS)
+    {
+        LOGGER(debug(string_VkResult(result)));
         return Error::VULKAN_INIT_ERROR;
+    }
+
 #ifdef ENABLE_VALIDATION_LAYER
     result = setupDebugMessenger(*this);
     if (result != VkResult::VK_SUCCESS)
+    {
+        LOGGER(debug(string_VkResult(result)));
         return Error::VULKAN_INIT_ERROR;
+    }
 #endif
+    LOGGER(debug("Vulkan initialised correctly"));
     return Error::NO_ERROR;
 }
 

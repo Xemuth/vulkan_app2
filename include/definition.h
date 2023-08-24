@@ -41,7 +41,7 @@ enum Error : uint32_t
     VULKAN_INIT_ERROR,
 };
 
-const char* const ErrorStr[] = {"no error", "Error occured and window must close"};
+const char* const ErrorStr[] = {"no error", "GLFW failed to initialise", "Error occured and window must close", "Vulkan failed to initialise"};
 
 static const char* error_to_string(AppError error)
 {
